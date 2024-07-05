@@ -10,30 +10,27 @@
         $(document).ready(function () {
         /**********Partie2************ */
         function mouseEnter() {
-            //Enlever la class "unshow"à l'élément aside
-            // ajouter la class "show" à l'élément aside
 
+                        $(this).find('aside').removeClass('unshow').addClass('show');
         }
         function mouseLeave() {
 
-            //Enlever la class "show"à l'élément aside
-            // ajouter la class "unshow" à l'élément aside
-
+                        $(this).find('aside').removeClass('show').addClass('unshow');
         }
 
         $(".card").hover(mouseEnter, mouseLeave);
 
         /**********Partie3****/
-        $(".page-link").on('click', (evt) => {
-            //Étape1: En utilisant jquery obtenir la valeur de l'attribut data-page-id
-            //de l'élément qui à été par l'utilisateur cliqué.
+            $(".page-link").on('click', (evt) => {
+                //Étape1: En utilisant jquery obtenir la valeur de l'attribut data-page-id
+                //de l'élément qui à été par l'utilisateur cliqué.
+                let x = $(evt.target).attr("data-page-id")
 
-            //Étape2: En utilisant jquery aller chercher le hidden input avec le name SeletectedPageIndex
-            //et y mettre la valeur obtenu à l'étape 1.
+                //Étape2: En utilisant jquery aller chercher le hidden input avec le name SeletectedPageIndex
+                //et y mettre la valeur obtenu à l'étape 1.
 
-
-
-            $('#filterForm').submit();
+                $('input[name="SelectedPageIndex"]').val(x);
+                $('#filterForm').submit()
         })
 
 
@@ -42,8 +39,30 @@
         //Baser vous sur le code du projet ExempleMVC AjaxFavoris
         //Vous devrez manipuler plusieurs fichier (model, controlleur, javascript, view, viewPartiel)
 
-
-
+            $(".FavoriteBtn").on("click", function (evt) {
+                let lien = $(this);
+                        let trainerid = $(this).attr("data-trainerid")
+                        let url = "/Trainer/Favorite/" + trainerid
+                        $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (response) {
+                        let isFavorite = JSON.parse(response)
+                        if (isFavorite) {
+                            lien.addClass("text-primary")
+                            lien.removeClass("text-dark")
+                        }
+                        else {
+                            lien.removeClass("text-primary")
+                            lien.addClass("text-dark")
+                        }
+                    },
+                    error: function (response) {
+                        console.log("ERROR!!!!");
+                    }
+               
+                     })
+                     })
 
         });
     </script>
@@ -120,6 +139,7 @@
 
             <div class="card">
                 <img src="@(JuliePro.Utility.AppConstants.ImagePathView + item.Photo)">
+                <a class="Favorite FavoriteBtn @(item.IsFavorite ? "text-primary": "text-dark")" data-trainerid="@item.Id"><i class="fa-solid fa-heart-circle-plus"></i></a>
 
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName), @Html.DisplayFor(modelItem => item.Discipline.Name)</h5>
@@ -212,7 +232,7 @@
         <ul class="pagination">
             @if (Model.Items.HasPreviousPage)
             {
-                <li class="page-item"><span data-page-id="0" class="page-link">@Locals["Previous"]</span></li>
+                <li class="page-item"><span data-page-id="@(Model.Items.PageIndex - 1)" class="page-link">@Locals["Previous"]</span></li>
             }
 
             @for (int i = 1; i <= Model.Items.TotalPages; i++)
@@ -229,7 +249,7 @@
 
             @if (Model.Items.HasNextPage)
             {
-                <li class="page-item"><span class="page-link" data-page-id="1">@Locals["Next"]</span></li>
+                <li class="page-item"><span class="page-link" data-page-id="@(Model.Items.PageIndex + 1)">@Locals["Next"]</span></li>
             }
         </ul>
     </nav>

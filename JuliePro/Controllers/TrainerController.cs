@@ -38,7 +38,7 @@ namespace JuliePro.Controllers
         {
             var trainers = await this._service.GetAllAsync(filter);
 
-            return View(nameof(Index)); 
+            return View(nameof(Index),trainers); 
         }
 
 
@@ -169,6 +169,18 @@ namespace JuliePro.Controllers
         {
             await _service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<JsonResult> Favorite(int id)
+        {
+            Trainer? z = await _service.GetByIdAsync(id);
+            if (z != null)
+            {
+                z.IsFavorite = !z.IsFavorite;
+                await _service.EditAsync(z);
+                return new JsonResult(z.IsFavorite);
+            }
+            throw new Exception("Could not find trainer with id: " + id);
         }
 
     }

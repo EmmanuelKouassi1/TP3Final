@@ -34,6 +34,7 @@ namespace JuliePro.Models
         [Display(Name = "Certifications")] public SelectList Certifications { get; set; }
         [Display(Name = "CertificationCenters")] public SelectList CertificationCenters { get; set; }
         [Display(Name = "AvailablePageSizes")] public SelectList AvailablePageSizes { get; set; }
+       
 
     }
 

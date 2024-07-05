@@ -35,7 +35,7 @@ namespace JuliePro.Models
         [ForeignKey("Discipline")]
         [Display(Name="Discipline_Id")] public int Discipline_Id { get; set; }
         [Display(Name="Discipline")] public virtual Discipline Discipline { get; set; }
-
+        public bool IsFavorite { get; set; }
 
 
 
