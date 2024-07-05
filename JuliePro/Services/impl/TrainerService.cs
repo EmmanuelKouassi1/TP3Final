@@ -40,8 +40,9 @@ namespace JuliePro.Services.impl
             /***********Partie1***************/
             result.Items = await this._dbContext.Trainers
                 .Where(i => filter.SearchNameText == null || (i.FirstName + " " + i.LastName).ToLower().Contains(filter.SearchNameText.ToLower()))
-                /**Ajouter des Where pour les critères Descipline et Genre**/
-              
+                  /**Ajouter des Where pour les critères Descipline et Genre**/
+                  .Where(i => filter.SelectedDisciplineId == null || i.Discipline_Id == filter.SelectedDisciplineId)
+       .Where(i => filter.SelectedGender == null || i.Genre == filter.SelectedGender)
                 .ToPaginatedAsync(result.SelectedPageIndex, result.SelectedPageSize);
 
             result.AvailablePageSizes = new SelectList(new List<int>() { 9, 12, 18, 21 });
